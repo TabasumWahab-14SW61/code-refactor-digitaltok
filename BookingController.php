@@ -35,7 +35,7 @@ class BookingController extends Controller
      */
     public function index(Request $request)
     {
-        if($user_id = $request->user_id) {
+        if($user_id = $request->get('user_id')) {
 
             $response = $this->repository->getUsersJobs($user_id);
 
@@ -65,8 +65,9 @@ class BookingController extends Controller
      */
     public function store(Request $request)
     {
+        $data = $request->all();
 
-        $response = $this->repository->store($request->__authenticatedUser, $request->all());
+        $response = $this->repository->store($request->__authenticatedUser, $data);
 
         return response($response);
 
@@ -79,8 +80,9 @@ class BookingController extends Controller
      */
     public function update($id, Request $request)
     {
+        $data = $request->all();
         $cuser = $request->__authenticatedUser;
-        $response = $this->repository->updateJob($id, array_except($request->all(), ['_token', 'submit']), $cuser);
+        $response = $this->repository->updateJob($id, array_except($data, ['_token', 'submit']), $cuser);
 
         return response($response);
     }
@@ -92,8 +94,9 @@ class BookingController extends Controller
     public function immediateJobEmail(Request $request)
     {
         $adminSenderEmail = config('app.adminemail');
+        $data = $request->all();
 
-        $response = $this->repository->storeJobEmail($request->all());
+        $response = $this->repository->storeJobEmail($data);
 
         return response($response);
     }
@@ -104,7 +107,7 @@ class BookingController extends Controller
      */
     public function getHistory(Request $request)
     {
-        if($user_id = $request->user_id) {
+        if($user_id = $request->get('user_id')) {
 
             $response = $this->repository->getUsersJobsHistory($user_id, $request);
             return response($response);
@@ -119,9 +122,10 @@ class BookingController extends Controller
      */
     public function acceptJob(Request $request)
     {
+        $data = $request->all();
         $user = $request->__authenticatedUser;
 
-        $response = $this->repository->acceptJob($request->all(), $user);
+        $response = $this->repository->acceptJob($data, $user);
 
         return response($response);
     }
